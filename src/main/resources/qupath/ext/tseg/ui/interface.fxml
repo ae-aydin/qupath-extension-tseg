@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="GridPane" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" hgap="15" vgap="15" prefWidth="560" prefHeight="540">
+    <columnConstraints>
+        <ColumnConstraints prefWidth="110"/>
+        <ColumnConstraints prefWidth="280"/>
+        <ColumnConstraints prefWidth="110"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints prefHeight="50"/>
+        <RowConstraints prefHeight="50"/>
+        <RowConstraints prefHeight="50"/>
+        <RowConstraints prefHeight="50"/>
+        <RowConstraints prefHeight="250"/>
+    </rowConstraints>
+
+    <Label text="Project Directory:" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.halignment="RIGHT" GridPane.valignment="CENTER"/>
+    <TextField fx:id="pyProjectField" promptText="Python Project Directory" style="-fx-font-size: 12px; -fx-font-family: Consolas; -fx-font-style: italic;" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="300" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+    <Button onMouseClicked="#selectPyProject" text=" 🗀 "  GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
+
+    <Label text="Confidence:" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
+    <Slider fx:id="confSlider" max="1.0" value="0.25" showTickMarks="true" showTickLabels="true" majorTickUnit="0.05" minorTickCount="0" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+
+    <Label text="IoU:" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="CENTER"/>
+    <Slider fx:id="iouSlider" max="1.0" value="0.7" showTickMarks="true" showTickLabels="true" majorTickUnit="0.05" minorTickCount="0" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+
+    <Button fx:id="runButton" text="  Segment Selected Region  " onMouseClicked="#runScript" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+
+    <TextArea fx:id="scriptOutput" editable="false" wrapText="true" style="-fx-font-size: 10px; -fx-font-family: Consolas; -fx-text-fill: green;" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+
+</fx:root>
