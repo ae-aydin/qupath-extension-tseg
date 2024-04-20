@@ -65,13 +65,11 @@ public class ExtensionInterface extends GridPane {
 
     @FXML
     private void runScript() {
-        /* Python script arguments */
         String pyProjectPath = pyProjectField.getText();
         PathConfig pathConfig = new PathConfig(pyProjectPath);
         double confidence = confSlider.getValue();
         double iou = iouSlider.getValue();
 
-        /* Getting currently selected region on image */
         QPImage QPImage = new QPImage();
         if (QPImage.getROI() == null) {
             scriptOutput.appendText(resources.getString("no_roi") + "\n");

@@ -10,7 +10,6 @@ public class PathConfig {
     private final String roiPath;
     private final String geojsonPath;
 
-    // Constructor
     public PathConfig(String basePath) {
         this.basePath = basePath;
         this.pythonPath = prepPythonPath();

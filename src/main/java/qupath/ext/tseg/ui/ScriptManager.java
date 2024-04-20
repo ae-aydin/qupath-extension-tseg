@@ -25,7 +25,6 @@ public class ScriptManager extends Task<Void> {
 
     @Override
     protected Void call() throws Exception {
-        /* Script arguments */
         String xROI = QPImage.getXROIString();
         String yROI = QPImage.getYROIString();
         String ds = QPImage.getDownsampleString();
