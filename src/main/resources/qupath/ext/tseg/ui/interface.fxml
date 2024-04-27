@@ -30,6 +30,6 @@
 
     <Button fx:id="runButton" text="  Segment Selected Region  " onMouseClicked="#runScript" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
 
-    <TextArea fx:id="scriptOutput" editable="false" wrapText="true" style="-fx-font-size: 10px; -fx-font-family: Consolas; -fx-text-fill: green;" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+    <TextArea fx:id="scriptOutput" editable="false" wrapText="true" style="-fx-font-size: 10px; -fx-font-family: Consolas;" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
 
 </fx:root>
