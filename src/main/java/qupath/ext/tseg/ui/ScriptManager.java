@@ -4,6 +4,7 @@ import javafx.concurrent.Task;
 import javafx.scene.control.TextArea;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -46,7 +47,7 @@ public class ScriptManager extends Task<Void> {
             appendToOutputTextArea(e.getMessage() + "\n");
         }
         process.waitFor();
-        QPImage.importGeojson(pathConfig.getGeojsonPath());
+        readGeojson();
         return null;
     }
 
@@ -54,4 +55,13 @@ public class ScriptManager extends Task<Void> {
         outputTextArea.appendText(text);
         outputTextArea.positionCaret(outputTextArea.getText().length());
     }
+
+    private void readGeojson() throws IOException {
+        File geojson = new File(pathConfig.getGeojsonPath());
+        if (geojson.exists() && geojson.isFile()) {
+            QPImage.importGeojson(geojson);
+        }
+        geojson.delete();
+    }
+
 }

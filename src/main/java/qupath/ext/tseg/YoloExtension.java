@@ -1,18 +1,24 @@
 package qupath.ext.tseg;
 
+import javafx.beans.property.StringProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import qupath.ext.tseg.ui.ExtensionInterface;
 import qupath.ext.tseg.ui.HelpInterface;
 import qupath.fx.dialogs.Dialogs;
+import qupath.fx.prefs.controlsfx.PropertyItemBuilder;
 import qupath.lib.common.Version;
 import qupath.lib.gui.QuPathGUI;
 import qupath.lib.gui.extensions.GitHubProject;
 import qupath.lib.gui.extensions.QuPathExtension;
+import qupath.lib.gui.prefs.PathPrefs;
+
 import java.io.IOException;
+import java.util.Objects;
 
 public class YoloExtension implements QuPathExtension, GitHubProject {
 	
@@ -29,6 +35,9 @@ public class YoloExtension implements QuPathExtension, GitHubProject {
 
 	private boolean isInstalled = false;
 
+	public static final StringProperty defaultPathProperty = PathPrefs.createPersistentPreference(
+			"defaultPath", null);
+
 	private Stage segmentStage;
 
     @Override
@@ -39,6 +48,19 @@ public class YoloExtension implements QuPathExtension, GitHubProject {
 		}
 		isInstalled = true;
 		addMenuItem(qupath);
+		addPreferenceToPane(qupath);
+	}
+
+	private void addPreferenceToPane(QuPathGUI qupath) {
+		var propertyItem = new PropertyItemBuilder<>(defaultPathProperty, String.class)
+				.name("Python Script Directory")
+				.category(EXTENSION_NAME)
+				.description("Python Script Directory")
+				.build();
+		qupath.getPreferencePane()
+				.getPropertySheet()
+				.getItems()
+				.add(propertyItem);
 	}
 
 	private void addMenuItem(QuPathGUI qupath) {
@@ -46,16 +68,18 @@ public class YoloExtension implements QuPathExtension, GitHubProject {
 		MenuItem helpItem = new MenuItem("Help");
 		MenuItem segmentItem = new MenuItem("Segment");
 		helpItem.setOnAction(e -> HelpInterface.showHelp());
-		segmentItem.setOnAction(e -> createSegmentationWindow(qupath));
+		segmentItem.setOnAction(e -> createSegmentationWindow());
 		menu.getItems().add(helpItem);
 		menu.getItems().add(segmentItem);
 	}
 
-	private void createSegmentationWindow(QuPathGUI qupath) {
+	private void createSegmentationWindow() {
 		if (segmentStage == null) {
 			try {
 				segmentStage = new Stage();
-				Scene segmentScene = new Scene(ExtensionInterface.createInstance(qupath));
+				Image mainIcon = new Image(Objects.requireNonNull(YoloExtension.class.getResourceAsStream("images/icon.png")));
+				segmentStage.getIcons().add(mainIcon);
+				Scene segmentScene = new Scene(ExtensionInterface.createInstance());
 				segmentStage.setScene(segmentScene);
 				segmentStage.setResizable(false);
 				segmentStage.setTitle("YOLO Tumor Segmentation");

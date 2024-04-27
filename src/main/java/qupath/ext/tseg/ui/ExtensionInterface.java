@@ -9,7 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
-import qupath.lib.gui.QuPathGUI;
+import qupath.ext.tseg.YoloExtension;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class ExtensionInterface extends GridPane {
 
     private static final ResourceBundle resources = ResourceBundle.getBundle("qupath.ext.tseg.ui.strings");
     @FXML
-    private TextField pyProjectField;
+    private TextField pyScriptDirField;
     @FXML
     private Slider confSlider;
     @FXML
@@ -31,11 +31,11 @@ public class ExtensionInterface extends GridPane {
     @FXML
     private TextArea scriptOutput;
 
-    public static ExtensionInterface createInstance(QuPathGUI qupath) throws IOException {
-        return new ExtensionInterface(qupath);
+    public static ExtensionInterface createInstance() throws IOException {
+        return new ExtensionInterface();
     }
 
-    private ExtensionInterface(QuPathGUI qupath) throws IOException {
+    private ExtensionInterface() throws IOException {
         var url = ExtensionInterface.class.getResource("interface.fxml");
         FXMLLoader loader = new FXMLLoader(url);
         loader.setRoot(this);
@@ -45,40 +45,40 @@ public class ExtensionInterface extends GridPane {
     }
 
     @FXML
-    private void selectPyProject() {
+    private void selectScriptDirectory() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle(resources.getString("dir_chooser"));
+        directoryChooser.setTitle(resources.getString("ext.dir_chooser"));
         File selectedDir = directoryChooser.showDialog(null);
         if (selectedDir != null) {
             String selectedPath = selectedDir.getAbsolutePath();
-            pyProjectField.setText(selectedPath);
-            ConfigManager.saveProperty("pyProjectPath", selectedPath);
+            pyScriptDirField.setText(selectedPath);
+            YoloExtension.defaultPathProperty.set(selectedPath);
         }
     }
 
     private void loadSavedDirectoryPath() {
-        String savedPath = ConfigManager.getProperty("pyProjectPath");
+        String savedPath = YoloExtension.defaultPathProperty.getValue();
         if (savedPath != null) {
-            pyProjectField.setText(savedPath);
+            pyScriptDirField.setText(savedPath);
         }
     }
 
     @FXML
     private void runScript() {
-        String pyProjectPath = pyProjectField.getText();
-        PathConfig pathConfig = new PathConfig(pyProjectPath);
+        String pyScriptDirPath = pyScriptDirField.getText();
+        PathConfig pathConfig = new PathConfig(pyScriptDirPath);
         double confidence = confSlider.getValue();
         double iou = iouSlider.getValue();
 
         QPImage QPImage = new QPImage();
         if (QPImage.getROI() == null) {
-            scriptOutput.appendText(resources.getString("no_roi") + "\n");
+            scriptOutput.appendText(resources.getString("run.no_roi") + "\n");
             return;
         }
 
-        scriptOutput.appendText(resources.getString("run") + "\n");
+        scriptOutput.appendText(resources.getString("run.running") + "\n");
         ScriptManager scriptManager = new ScriptManager(pathConfig, QPImage, confidence, iou, scriptOutput);
-        scriptManager.setOnSucceeded(event -> scriptOutput.appendText(resources.getString("done") + "\n"));
+        scriptManager.setOnSucceeded(event -> scriptOutput.appendText(resources.getString("run.done") + "\n"));
 
         scriptManager.setOnFailed(event -> {
             Throwable exception = scriptManager.getException();

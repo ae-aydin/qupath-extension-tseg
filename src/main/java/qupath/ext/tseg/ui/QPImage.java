@@ -8,6 +8,7 @@ import qupath.lib.roi.interfaces.ROI;
 import qupath.lib.scripting.QP;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,11 +41,15 @@ public class QPImage {
         QP.writeImageRegion(server, requestROI, roiPath);
     }
 
-    public void importGeojson(String geojsonPath) throws IOException {
-        InputStream jsonStream = new FileInputStream(geojsonPath);
-        List<PathObject> annotations = PathIO.readObjectsFromGeoJSON(jsonStream);
+    public void importGeojson(File geojson) throws IOException {
+        InputStream geojsonStream = new FileInputStream(geojson);
+        List<PathObject> annotations = PathIO.readObjectsFromGeoJSON(geojsonStream);
+        for (PathObject pathObject : annotations) {
+            pathObject.setLocked(true);
+        }
         QP.addObjects(annotations);
         ROIObject.addChildObjects(annotations);
+        ROIObject.setLocked(true);
     }
 
     public String getDownsampleString() {
