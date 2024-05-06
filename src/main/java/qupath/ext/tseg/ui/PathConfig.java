@@ -14,8 +14,8 @@ public class PathConfig {
         this.basePath = basePath;
         this.pythonPath = prepPythonPath();
         this.scriptPath = basePath + File.separator + "main.py";
-        this.roiPath = basePath + File.separator + "rois" + File.separator + "roi.png";
-        this.geojsonPath = basePath + File.separator + "preds" + File.separator + "roi.geojson";
+        this.roiPath = basePath + File.separator + ".roi_tiles";
+        this.geojsonPath = basePath + File.separator + ".preds" + File.separator + "roi.geojson";
     }
 
     private String prepPythonPath() {

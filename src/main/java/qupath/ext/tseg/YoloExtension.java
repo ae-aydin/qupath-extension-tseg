@@ -1,6 +1,6 @@
 package qupath.ext.tseg;
 
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
@@ -38,6 +38,18 @@ public class YoloExtension implements QuPathExtension, GitHubProject {
 	public static final StringProperty defaultPathProperty = PathPrefs.createPersistentPreference(
 			"defaultPath", null);
 
+	public static final IntegerProperty tileSizeProperty = PathPrefs.createPersistentPreference(
+			"tileSize", 640);
+
+	public static final DoubleProperty downsampleProperty = PathPrefs.createPersistentPreference(
+			"downsample", 3.0);
+
+	public static final DoubleProperty overlapProperty = PathPrefs.createPersistentPreference(
+			"overlap", 0.3);
+
+	public static final StringProperty imageExtProperty = PathPrefs.createPersistentPreference(
+			"imgExtension", "png");
+
 	private Stage segmentStage;
 
     @Override
@@ -48,19 +60,27 @@ public class YoloExtension implements QuPathExtension, GitHubProject {
 		}
 		isInstalled = true;
 		addMenuItem(qupath);
-		addPreferenceToPane(qupath);
+		addPreferencesToPane(qupath);
 	}
 
-	private void addPreferenceToPane(QuPathGUI qupath) {
-		var propertyItem = new PropertyItemBuilder<>(defaultPathProperty, String.class)
-				.name("Python Script Directory")
+	private <T> void addPreference(QuPathGUI qupath, Property<T> pref, final Class<? extends T> cls, String name){
+		var propertyItem = new PropertyItemBuilder<>(pref, cls)
+				.name(name)
 				.category(EXTENSION_NAME)
-				.description("Python Script Directory")
+				.description(name)
 				.build();
 		qupath.getPreferencePane()
 				.getPropertySheet()
 				.getItems()
 				.add(propertyItem);
+	}
+
+	private void addPreferencesToPane(QuPathGUI qupath) {
+		addPreference(qupath, defaultPathProperty, String.class, "Python script directory");
+		addPreference(qupath, downsampleProperty, Double.class, "Downsample rate");
+		addPreference(qupath, imageExtProperty, String.class, "Tile image extension");
+		addPreference(qupath, tileSizeProperty, Integer.class, "Tile size");
+		addPreference(qupath, overlapProperty, Double.class, "Tile overlap ratio ");
 	}
 
 	private void addMenuItem(QuPathGUI qupath) {

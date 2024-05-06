@@ -1,9 +1,11 @@
 package qupath.ext.tseg.ui;
 
-import qupath.lib.images.servers.ImageServer;
+import qupath.ext.tseg.YoloExtension;
+import qupath.lib.images.ImageData;
+import qupath.lib.images.writers.TileExporter;
 import qupath.lib.io.PathIO;
 import qupath.lib.objects.PathObject;
-import qupath.lib.regions.RegionRequest;
+import qupath.lib.regions.ImageRegion;
 import qupath.lib.roi.interfaces.ROI;
 import qupath.lib.scripting.QP;
 
@@ -16,29 +18,34 @@ import java.util.List;
 
 public class QPImage {
 
-    private final ImageServer<BufferedImage> server;
+    private final ImageData<BufferedImage> imageData;
     private final ROI ROI;
     private final PathObject ROIObject;
     private final double downsample;
+    private final String imageExtension;
+    private final int tileSize;
+    private final double overlapPercentage;
 
     public QPImage() {
-        this.server = (ImageServer<BufferedImage>) QP.getCurrentServer();
+        this.imageData = QP.getCurrentImageData();
         this.ROI = QP.getSelectedROI();
         this.ROIObject = QP.getSelectedObject();
-        this.downsample = 3.0;
-    }
-
-    public String getXROIString() {
-        return String.valueOf(ROI.getBoundsX());
-    }
-
-    public String getYROIString() {
-        return String.valueOf(ROI.getBoundsY());
+        this.downsample = YoloExtension.downsampleProperty.getValue(); // should match with model
+        this.imageExtension = "." + YoloExtension.imageExtProperty.getValue();
+        this.tileSize = YoloExtension.tileSizeProperty.getValue(); // should match with model
+        this.overlapPercentage = YoloExtension.overlapProperty.getValue();
     }
 
     public void saveROI(String roiPath) throws IOException {
-        RegionRequest requestROI = RegionRequest.createInstance(server.getPath(), downsample, ROI);
-        QP.writeImageRegion(server, requestROI, roiPath);
+        ImageRegion requestROI = ImageRegion.createInstance(ROI);
+        TileExporter tileExporter = new TileExporter(imageData);
+        tileExporter.downsample(downsample)
+                .imageExtension(imageExtension)
+                .tileSize(tileSize)
+                .overlap((int) (tileSize * overlapPercentage))
+                .region(requestROI)
+                .includePartialTiles(true)
+                .writeTiles(roiPath);
     }
 
     public void importGeojson(File geojson) throws IOException {
@@ -52,10 +59,10 @@ public class QPImage {
         ROIObject.setLocked(true);
     }
 
-    public String getDownsampleString() {
-        return String.valueOf(downsample);
-    }
-
     public ROI getROI() {return ROI;}
+
+    public double getDownsample() {return downsample;}
+
+    public int getTileSize() {return tileSize;}
 
 }

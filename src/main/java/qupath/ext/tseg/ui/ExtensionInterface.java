@@ -65,6 +65,9 @@ public class ExtensionInterface extends GridPane {
 
     @FXML
     private void runScript() {
+        runButton.setDisable(true);
+        scriptOutput.clear();
+        scriptOutput.appendText(resources.getString("run.running") + "\n");
         String pyScriptDirPath = pyScriptDirField.getText();
         PathConfig pathConfig = new PathConfig(pyScriptDirPath);
         double confidence = confSlider.getValue();
@@ -73,16 +76,21 @@ public class ExtensionInterface extends GridPane {
         QPImage QPImage = new QPImage();
         if (QPImage.getROI() == null) {
             scriptOutput.appendText(resources.getString("run.no_roi") + "\n");
+            runButton.setDisable(false);
             return;
         }
 
-        scriptOutput.appendText(resources.getString("run.running") + "\n");
         ScriptManager scriptManager = new ScriptManager(pathConfig, QPImage, confidence, iou, scriptOutput);
-        scriptManager.setOnSucceeded(event -> scriptOutput.appendText(resources.getString("run.done") + "\n"));
+        scriptManager.setOnSucceeded(event -> {
+            scriptOutput.appendText(resources.getString("run.done") + "\n");
+            runButton.setDisable(false);
+        });
 
         scriptManager.setOnFailed(event -> {
             Throwable exception = scriptManager.getException();
             scriptOutput.appendText("ERROR:" + exception.getMessage() + "\n");
+            scriptOutput.appendText(resources.getString("run.fail") + "\n");
+            runButton.setDisable(false);
         });
 
         Thread thread = new Thread(scriptManager);
