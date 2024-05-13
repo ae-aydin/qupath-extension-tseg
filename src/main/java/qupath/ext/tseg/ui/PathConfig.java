@@ -2,6 +2,7 @@ package qupath.ext.tseg.ui;
 
 import java.io.File;
 
+// Class for managing paths.
 public class PathConfig {
 
     private final String basePath;
@@ -18,6 +19,7 @@ public class PathConfig {
         this.geojsonPath = basePath + File.separator + ".preds" + File.separator + "roi.geojson";
     }
 
+    // Prepare virtual environment Python path according to OS.
     private String prepPythonPath() {
         String osName = System.getProperty("os.name").toLowerCase();
         String venvPath = this.basePath + File.separator + ".venv" + File.separator;

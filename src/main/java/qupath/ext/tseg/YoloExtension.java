@@ -63,6 +63,7 @@ public class YoloExtension implements QuPathExtension, GitHubProject {
 		addPreferencesToPane(qupath);
 	}
 
+	// Create a preference.
 	private <T> void addPreference(QuPathGUI qupath, Property<T> pref, final Class<? extends T> cls, String name){
 		var propertyItem = new PropertyItemBuilder<>(pref, cls)
 				.name(name)
@@ -75,6 +76,7 @@ public class YoloExtension implements QuPathExtension, GitHubProject {
 				.add(propertyItem);
 	}
 
+	// Store preferences within QuPath.
 	private void addPreferencesToPane(QuPathGUI qupath) {
 		addPreference(qupath, defaultPathProperty, String.class, "Python script directory");
 		addPreference(qupath, downsampleProperty, Double.class, "Downsample rate");
@@ -83,6 +85,7 @@ public class YoloExtension implements QuPathExtension, GitHubProject {
 		addPreference(qupath, overlapProperty, Double.class, "Tile overlap ratio ");
 	}
 
+	// Add menu item to extension menu.
 	private void addMenuItem(QuPathGUI qupath) {
 		var menu = qupath.getMenu("Extensions>" + "TSEG", true);
 		MenuItem helpItem = new MenuItem("Help");
@@ -93,6 +96,7 @@ public class YoloExtension implements QuPathExtension, GitHubProject {
 		menu.getItems().add(segmentItem);
 	}
 
+	// Create main extension window.
 	private void createSegmentationWindow() {
 		if (segmentStage == null) {
 			try {

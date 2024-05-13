@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+// Class for managing I/O within QuPath.
 public class QPImage {
 
     private final ImageData<BufferedImage> imageData;
@@ -36,6 +37,7 @@ public class QPImage {
         this.overlapPercentage = YoloExtension.overlapProperty.getValue();
     }
 
+    // Save selected ROI as tiles at given path.
     public void saveROI(String roiPath) throws IOException {
         ImageRegion requestROI = ImageRegion.createInstance(ROI);
         TileExporter tileExporter = new TileExporter(imageData);
@@ -48,6 +50,7 @@ public class QPImage {
                 .writeTiles(roiPath);
     }
 
+    // Read and import predictions geoJson file from given path.
     public void importGeojson(File geojson) throws IOException {
         InputStream geojsonStream = new FileInputStream(geojson);
         List<PathObject> annotations = PathIO.readObjectsFromGeoJSON(geojsonStream);

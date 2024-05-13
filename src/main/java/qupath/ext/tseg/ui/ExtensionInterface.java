@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ResourceBundle;
 
+// Class for managing main interface using FXML.
 public class ExtensionInterface extends GridPane {
 
     private static final ResourceBundle resources = ResourceBundle.getBundle("qupath.ext.tseg.ui.strings");
@@ -35,6 +36,7 @@ public class ExtensionInterface extends GridPane {
         return new ExtensionInterface();
     }
 
+    // Constructor
     private ExtensionInterface() throws IOException {
         var url = ExtensionInterface.class.getResource("interface.fxml");
         FXMLLoader loader = new FXMLLoader(url);
@@ -44,6 +46,7 @@ public class ExtensionInterface extends GridPane {
         loadSavedDirectoryPath();
     }
 
+    // Set path field according to directory chooser.
     @FXML
     private void selectScriptDirectory() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -56,6 +59,7 @@ public class ExtensionInterface extends GridPane {
         }
     }
 
+    // Load script directory path from QuPath preferences.
     private void loadSavedDirectoryPath() {
         String savedPath = YoloExtension.defaultPathProperty.getValue();
         if (savedPath != null) {
@@ -63,6 +67,7 @@ public class ExtensionInterface extends GridPane {
         }
     }
 
+    // Run Python script through Java using a helper class upon clicking run button.
     @FXML
     private void runScript() {
         runButton.setDisable(true);
@@ -73,6 +78,7 @@ public class ExtensionInterface extends GridPane {
         double confidence = confSlider.getValue();
         double iou = iouSlider.getValue();
 
+        // Initialize QuPath I/O helper class.
         QPImage QPImage = new QPImage();
         if (QPImage.getROI() == null) {
             scriptOutput.appendText(resources.getString("run.no_roi") + "\n");
@@ -80,6 +86,7 @@ public class ExtensionInterface extends GridPane {
             return;
         }
 
+        // Run Python script.
         ScriptManager scriptManager = new ScriptManager(pathConfig, QPImage, confidence, iou, scriptOutput);
         scriptManager.setOnSucceeded(event -> {
             scriptOutput.appendText(resources.getString("run.done") + "\n");

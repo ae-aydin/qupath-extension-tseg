@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+// Class for managing Python script operations.
 public class ScriptManager extends Task<Void> {
 
     private static final ResourceBundle resources = ResourceBundle.getBundle("qupath.ext.tseg.ui.strings");
@@ -27,8 +28,10 @@ public class ScriptManager extends Task<Void> {
         this.outputTextArea = outputTextArea;
     }
 
+    // Run Python script with given arguments. Read back script's output.
     @Override
     protected Void call() throws Exception {
+        // Python script arguments.
         String roiXBoundStr = String.valueOf(QPImage.getROI().getBoundsX());
         String roiYBoundStr = String.valueOf(QPImage.getROI().getBoundsY());
         String roiWidthStr = String.valueOf(QPImage.getROI().getBoundsWidth());
@@ -38,6 +41,7 @@ public class ScriptManager extends Task<Void> {
         String confidenceStr = String.valueOf(confidence);
         String iouStr = String.valueOf(iou);
 
+        // Save ROI, initialize output area and timers.
         appendToOutputTextArea(resources.getString("run.tiles") + "\n");
         long startTime = System.currentTimeMillis();
         QPImage.saveROI(pathConfig.getRoiPath());
@@ -46,6 +50,8 @@ public class ScriptManager extends Task<Void> {
         appendToOutputTextArea(elapsedStr);
 
         appendToOutputTextArea(resources.getString("run.script_run") + "\n");
+
+        // Run Python script using ProcessBuilder.
         ProcessBuilder processBuilder = new ProcessBuilder(pathConfig.getPythonPath(),
                 pathConfig.getScriptPath(),
                 pathConfig.getBasePath(),
@@ -58,6 +64,7 @@ public class ScriptManager extends Task<Void> {
                 confidenceStr,
                 iouStr);
 
+        // Direct script output to Java, show it on a text field.
         processBuilder.redirectErrorStream(true);
         Process process = processBuilder.start();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
@@ -70,6 +77,7 @@ public class ScriptManager extends Task<Void> {
         }
         process.waitFor();
 
+        // Read predictions, and clean temporary files.
         appendToOutputTextArea(resources.getString("run.import") + "\n");
         boolean cleanedJSON = readGeojson();
         boolean cleanedROI = cleanDirectory(new File(pathConfig.getRoiPath()));
@@ -80,11 +88,13 @@ public class ScriptManager extends Task<Void> {
         return null;
     }
 
+    // Logging through TextField.
     private void appendToOutputTextArea(String text) {
         outputTextArea.appendText(text);
         outputTextArea.positionCaret(outputTextArea.getText().length());
     }
 
+    // Import model predictions as geoJson. Clean it afterward.
     private boolean readGeojson() throws IOException {
         File geojson = new File(pathConfig.getGeojsonPath());
         boolean geojsonDeleted = false;
@@ -95,6 +105,7 @@ public class ScriptManager extends Task<Void> {
         return geojsonDeleted;
     }
 
+    // Clean given directory.
     private boolean cleanDirectory(File dir) {
         boolean cleaned = false;
         for (File file: Objects.requireNonNull(dir.listFiles())) {

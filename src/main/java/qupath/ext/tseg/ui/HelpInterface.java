@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+// Class for creating help page for extension.
 public class HelpInterface {
 
     private static final ResourceBundle resources = ResourceBundle.getBundle("qupath.ext.tseg.ui.strings");
