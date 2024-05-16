@@ -10,7 +10,7 @@ Enables tumor segmentation with YOLO-seg models through a Python inference scrip
 2. Download the inference script from [*tseg-qupath-inf*](https://github.com/ae-aydin/tseg-qupath-inf) (either by cloning the repository or downloading the ZIP archive).
     * `Python > 3.8`
     * https://www.python.org/downloads/
-3. Run *setup.bat* (for Windows) or *setup.sh* (for Unix-based systems) to prepare the inference folder.
+3. Run *setup.bat* (for Windows) or *setup.sh* (for Linux and macOS) to prepare the inference folder.
     * This will create virtual environment and some folders.
 4. Obtain a YOLO-seg model `(.pt, single class - 0: Tumor)` for segmentation.
    * Model will be added later on.
