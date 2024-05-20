@@ -6,7 +6,9 @@
 
 Enables tumor segmentation with YOLO-seg models through a Python inference script, managing input/output by sending ROI and receiving predictions in GeoJSON format for integration with QuPath.
 
-![Extension Interface](interface.png?raw=true)
+<p align="center">
+  <img src="interface.jpg" width=450>
+</p>
 
 ### Installation
 1. Install the extension.
