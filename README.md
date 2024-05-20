@@ -1,6 +1,7 @@
 # QuPath YOLO Tumor Segmentation Extension
 
 **HU AIN Final Project**
+
 [Project Web Page](https://metehan41.github.io/TSEG_Web_Page/)
 
 Enables tumor segmentation with YOLO-seg models through a Python inference script, managing input/output by sending ROI and receiving predictions in GeoJSON format for integration with QuPath.
