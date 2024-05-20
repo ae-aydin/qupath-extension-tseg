@@ -2,10 +2,9 @@ package qupath.ext.tseg.ui;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.Objects;
@@ -21,19 +20,21 @@ public class HelpInterface {
         Image helpIcon = new Image(Objects.requireNonNull(HelpInterface.class.getResourceAsStream("images/help_icon.png")));
         helpStage.getIcons().add(helpIcon);
         VBox helpvBox = new VBox();
-        helpvBox.setPrefWidth(300);
+        helpvBox.setPrefWidth(580);
         helpvBox.setPrefHeight(300);
         helpvBox.setPadding(new Insets(10));
 
         String helpStr = resources.getString("help.instructions");
-        Text helpText = new Text(helpStr);
-        helpText.setFill(Color.WHITE);
-        helpText.setWrappingWidth(300);
+        TextArea helpText = new TextArea(helpStr);
+        helpText.setEditable(false);
+        helpText.setWrapText(true);
+        helpText.prefWidthProperty().bind(helpvBox.widthProperty());
+        helpText.prefHeightProperty().bind(helpvBox.heightProperty());
         helpvBox.getChildren().add(helpText);
 
         helpStage.setScene(new Scene(helpvBox));
         helpStage.setResizable(false);
-        helpStage.setTitle("How to use?");
+        helpStage.setTitle("How to install and use?");
         helpStage.show();
     }
 
