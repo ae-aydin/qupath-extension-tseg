@@ -1,6 +1,7 @@
 # QuPath YOLO Tumor Segmentation Extension
 
 **HU AIN Final Project**
+[Project Web Page](https://metehan41.github.io/TSEG_Web_Page/)
 
 Enables tumor segmentation with YOLO-seg models through a Python inference script, managing input/output by sending ROI and receiving predictions in GeoJSON format for integration with QuPath.
 
@@ -13,7 +14,7 @@ Enables tumor segmentation with YOLO-seg models through a Python inference scrip
 3. Run *setup.bat* (for Windows) or *setup.sh* (for Linux and macOS) to prepare the inference folder.
     * This will create virtual environment and some folders.
 4. Obtain a YOLO-seg model `(.pt, single class - 0: Tumor)` for segmentation.
-   * Model will be added later on.
+   * Our current model: [*Drive Link*](https://drive.google.com/file/d/1LjO4FIN06ZCgs-9Zrwyu5m5ZLDDCekSf/view?usp=sharing). It segments stained tumor areas most effectively.
 5. Place the model inside the `tseg-qupath-inf/models` directory and rename it to `model.pt` if required.
 
 6. In QuPath, select a ROI using the rectangle tool and ensure it is selected.
