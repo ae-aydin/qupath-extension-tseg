@@ -4,6 +4,13 @@
 
 [Project Web Page](https://metehan41.github.io/TSEG_Web_Page/)
 
+Project Repositories:
+* Model Training: [tseg](https://github.com/ae-aydin/tseg)
+* Extension Helper Script: [tseg-qupath-inf](https://github.com/ae-aydin/tseg-qupath-inf)
+* Extension: [qupath-extension-tseg](https://github.com/ae-aydin/qupath-extension-tseg)
+
+***
+
 Enables tumor segmentation with YOLO-seg models through a Python inference script, managing input/output by sending ROI and receiving predictions in GeoJSON format for integration with QuPath.
 
 <p align="center">
