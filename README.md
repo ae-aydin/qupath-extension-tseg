@@ -2,8 +2,6 @@
 
 **HU AIN Final Project**
 
-[Project Web Page](https://metehan41.github.io/TSEG_Web_Page/)
-
 Project Repositories:
 * Model Training: [tseg](https://github.com/ae-aydin/tseg)
 * Extension Helper Script: [tseg-qupath-inf](https://github.com/ae-aydin/tseg-qupath-inf)
