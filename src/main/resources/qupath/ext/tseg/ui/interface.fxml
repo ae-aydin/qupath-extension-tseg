@@ -1,35 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<fx:root xmlns:fx="http://javafx.com/fxml/1"
+         type="VBox"
+         prefWidth="500"
+         prefHeight="230"
+         xmlns="http://javafx.com/javafx/20"
+         stylesheets="@interface-style.css">
 
-<fx:root type="GridPane" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" hgap="15" vgap="15" prefWidth="560" prefHeight="540">
-    <columnConstraints>
-        <ColumnConstraints prefWidth="110"/>
-        <ColumnConstraints prefWidth="280"/>
-        <ColumnConstraints prefWidth="110"/>
-    </columnConstraints>
+    <fx:define>
+        <ToggleGroup fx:id="tabsGroup"/>
+    </fx:define>
 
-    <rowConstraints>
-        <RowConstraints prefHeight="50"/>
-        <RowConstraints prefHeight="50"/>
-        <RowConstraints prefHeight="50"/>
-        <RowConstraints prefHeight="50"/>
-        <RowConstraints prefHeight="250"/>
-    </rowConstraints>
+    <HBox styleClass="tab-bar" VBox.vgrow="NEVER">
+        <ToggleButton text="%tab.main"
+                      selected="true"
+                      toggleGroup="$tabsGroup"
+                      maxWidth="Infinity"
+                      HBox.hgrow="ALWAYS"
+                      styleClass="tab-button"
+                      fx:id="mainTab"/>
 
-    <Label text="Script Directory:" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.halignment="RIGHT" GridPane.valignment="CENTER"/>
-    <TextField fx:id="pyScriptDirField" promptText="Python Script Directory" style="-fx-font-size: 12px; -fx-font-family: Consolas; -fx-font-style: italic;" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="300" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-    <Button onMouseClicked="#selectScriptDirectory" text=" 📁 " GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
+        <ToggleButton text="%tab.about"
+                      toggleGroup="$tabsGroup"
+                      maxWidth="Infinity"
+                      HBox.hgrow="ALWAYS"
+                      styleClass="tab-button"
+                      fx:id="aboutTab"/>
+    </HBox>
 
-    <Label text="Confidence:" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
-    <Slider fx:id="confSlider" max="1.0" value="0.25" showTickMarks="true" showTickLabels="true" majorTickUnit="0.05" minorTickCount="0" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+    <StackPane fx:id="contentStack" VBox.vgrow="ALWAYS">
 
-    <Label text="IoU:" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="CENTER"/>
-    <Slider fx:id="iouSlider" max="1.0" value="0.7" showTickMarks="true" showTickLabels="true" majorTickUnit="0.05" minorTickCount="0" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+        <VBox fx:id="mainView" spacing="20" visible="${mainTab.selected}" managed="${mainTab.selected}">
+            <padding>
+                <Insets top="25" right="25" bottom="25" left="25"/>
+            </padding>
 
-    <Button fx:id="runButton" text="  Segment Selected Region  " onMouseClicked="#runScript" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="%label.model" minWidth="80"/>
+                <ComboBox fx:id="modelComboBox" promptText="%prompt.select.model" maxWidth="Infinity"
+                          HBox.hgrow="ALWAYS" onAction="#onModelSelected"/>
+                <Button fx:id="modelChooser" text="🗁" onAction="#addModel"/>
+            </HBox>
 
-    <TextArea fx:id="scriptOutput" editable="false" wrapText="true" style="-fx-font-size: 11px; -fx-font-family: Consolas;" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                    <Label text="%label.confidence" minWidth="80">
+                        <tooltip>
+                            <Tooltip text="%tooltip.confidence"/>
+                        </tooltip>
+                    </Label>
+                    <Spinner fx:id="confidenceSpinner" editable="true" maxWidth="Infinity" HBox.hgrow="ALWAYS">
+                        <valueFactory>
+                            <SpinnerValueFactory.DoubleSpinnerValueFactory min="0.0" max="1.0" initialValue="0.5"
+                                                                           amountToStepBy="0.05"/>
+                        </valueFactory>
+                    </Spinner>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                    <Label text="%label.targetMPP" minWidth="80">
+                        <tooltip>
+                            <Tooltip text="%tooltip.targetMPP"/>
+                        </tooltip>
+                    </Label>
+                    <Spinner fx:id="targetMPPSpinner" editable="true" maxWidth="Infinity" HBox.hgrow="ALWAYS">
+                        <valueFactory>
+                            <SpinnerValueFactory.DoubleSpinnerValueFactory min="0" max="5" initialValue="0.5"
+                                                                           amountToStepBy="0.1"/>
+                        </valueFactory>
+                    </Spinner>
+                </HBox>
+            </HBox>
 
+            <VBox spacing="20" alignment="CENTER">
+                <StackPane>
+                    <Button fx:id="runButton" text="%button.segment" onAction="#runInference" alignment="CENTER"
+                            prefHeight="50" prefWidth="Infinity"/>
+                    <ProgressIndicator fx:id="statusIndicator" visible="false" minHeight="30" maxWidth="30"/>
+                </StackPane>
+            </VBox>
+
+        </VBox>
+
+        <VBox fx:id="aboutView" alignment="CENTER" spacing="10" visible="${aboutTab.selected}"
+              managed="${aboutTab.selected}">
+            <padding>
+                <Insets top="5" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="%window.title" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+            <Separator prefWidth="200" maxWidth="Infinity"/>
+            <Text text="%about.content" textAlignment="CENTER" wrappingWidth="470" style="-fx-fill: #bbbbbb;"/>
+            <Text text="%about.extra" textAlignment="CENTER" style="-fx-fill: #bbbbbb;"/>
+            <Label text="%about.author"/>
+        </VBox>
+
+    </StackPane>
 </fx:root>

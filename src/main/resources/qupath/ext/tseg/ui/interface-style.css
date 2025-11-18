@@ -1,0 +1,26 @@
+.tab-bar {
+    -fx-padding: 0;
+    -fx-border-color: #444;
+    -fx-border-width: 0 0 1px 0;
+    -fx-background-color: #3c3f41;
+}
+
+.tab-button {
+    -fx-font-size: 14px;
+    -fx-text-fill: #bbbbbb;
+    -fx-padding: 5px 16px;
+
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 3px 0;
+    -fx-border-insets: 0;
+}
+
+
+.tab-button:selected {
+    -fx-text-fill: white;
+    -fx-border-color: #aaaaaa;
+}

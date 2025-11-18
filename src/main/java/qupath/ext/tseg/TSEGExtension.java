@@ -1,138 +1,91 @@
+/*
+ * QuPath TSEG Extension for Tumor Area Segmentation
+ * Copyright (C) 2025 Arif Enes Aydın
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package qupath.ext.tseg;
 
-import javafx.beans.property.*;
-import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import qupath.ext.tseg.ui.ExtensionInterface;
-import qupath.ext.tseg.ui.HelpInterface;
-import qupath.fx.dialogs.Dialogs;
-import qupath.fx.prefs.controlsfx.PropertyItemBuilder;
+import qupath.ext.tseg.config.PreferenceManager;
+import qupath.ext.tseg.ui.WindowManager;
+import qupath.ext.tseg.util.Utils;
 import qupath.lib.common.Version;
 import qupath.lib.gui.QuPathGUI;
 import qupath.lib.gui.extensions.GitHubProject;
 import qupath.lib.gui.extensions.QuPathExtension;
-import qupath.lib.gui.prefs.PathPrefs;
 
-import java.io.IOException;
-import java.util.Objects;
+import java.util.Properties;
 
-public class YoloExtension implements QuPathExtension, GitHubProject {
+public class TSEGExtension implements QuPathExtension, GitHubProject {
 
-	private static final Logger logger = LoggerFactory.getLogger(YoloExtension.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TSEGExtension.class);
+    private static final Properties METADATA = Utils.loadConfig("qupath/ext/tseg/metadata.properties");
 
-	private static final String EXTENSION_NAME = "YOLO Tumor Segmentation";
+    private static final String EXTENSION_NAME = METADATA.getProperty("extension.name");
+    private static final GitHubRepo EXTENSION_REPOSITORY = GitHubRepo.create(
+            EXTENSION_NAME,
+            METADATA.getProperty("extension.owner"),
+            METADATA.getProperty("extension.repo")
+    );
+    private static final String EXTENSION_DESCRIPTION = METADATA.getProperty("extension.description");
+    private static final Version EXTENSION_QUPATH_VERSION = Version.parse(
+            METADATA.getProperty("extension.qupath.version")
+    );
 
-	private static final String EXTENSION_DESCRIPTION = "Tumor Segmentation with YOLO-seg Models - HU AIN Final Project";
-
-	private static final Version EXTENSION_QUPATH_VERSION = Version.parse("v0.6.0");
-
-	private static final GitHubRepo EXTENSION_REPOSITORY = GitHubRepo.create(
-			EXTENSION_NAME, "ae-aydin", "qupath-extension-tseg");
-
-	private boolean isInstalled = false;
-
-	public static final StringProperty defaultPathProperty = PathPrefs.createPersistentPreference(
-			"defaultPath", null);
-
-	public static final IntegerProperty tileSizeProperty = PathPrefs.createPersistentPreference(
-			"tileSize", 640);
-
-	public static final DoubleProperty downsampleProperty = PathPrefs.createPersistentPreference(
-			"downsample", 3.0);
-
-	public static final DoubleProperty overlapProperty = PathPrefs.createPersistentPreference(
-			"overlap", 0.3);
-
-	public static final StringProperty imageExtProperty = PathPrefs.createPersistentPreference(
-			"imgExtension", "png");
-
-	private Stage segmentStage;
+    private final WindowManager windowManager = new WindowManager();
+    private boolean isInstalled = false;
 
     @Override
-	public void installExtension(QuPathGUI qupath) {
-		if (isInstalled) {
-			logger.debug("{} is already installed", getName());
-			return;
-		}
-		isInstalled = true;
-		addMenuItem(qupath);
-		addPreferencesToPane(qupath);
-	}
+    public void installExtension(QuPathGUI qupath) {
+        if (isInstalled) {
+            LOGGER.debug("{} is already installed", getName());
+            return;
+        }
+        isInstalled = true;
+        addMenuItem(qupath);
+        PreferenceManager.addPreferencesToPane(qupath, EXTENSION_NAME);
+    }
 
-	// Create a preference.
-	private <T> void addPreference(QuPathGUI qupath, Property<T> pref, final Class<? extends T> cls, String name){
-		var propertyItem = new PropertyItemBuilder<>(pref, cls)
-				.name(name)
-				.category(EXTENSION_NAME)
-				.description(name)
-				.build();
-		qupath.getPreferencePane()
-				.getPropertySheet()
-				.getItems()
-				.add(propertyItem);
-	}
+    private void addMenuItem(QuPathGUI qupath) {
+        var extensionsMenu = qupath.getMenu("Extensions", true);
+        MenuItem tsegItem = new MenuItem(EXTENSION_NAME);
+        tsegItem.setOnAction(e -> windowManager.showMainWindow());
+        extensionsMenu.getItems().add(tsegItem);
+    }
 
-	// Store preferences within QuPath.
-	private void addPreferencesToPane(QuPathGUI qupath) {
-		addPreference(qupath, defaultPathProperty, String.class, "Python script directory");
-		addPreference(qupath, downsampleProperty, Double.class, "Downsample rate");
-		addPreference(qupath, imageExtProperty, String.class, "Tile image extension");
-		addPreference(qupath, tileSizeProperty, Integer.class, "Tile size");
-		addPreference(qupath, overlapProperty, Double.class, "Tile overlap ratio ");
-	}
+    @Override
+    public String getName() {
+        return EXTENSION_NAME;
+    }
 
-	// Add menu item to extension menu.
-	private void addMenuItem(QuPathGUI qupath) {
-		var menu = qupath.getMenu("Extensions>" + "TSEG", true);
-		MenuItem helpItem = new MenuItem("Help");
-		MenuItem segmentItem = new MenuItem("Segment");
-		helpItem.setOnAction(e -> HelpInterface.showHelp());
-		segmentItem.setOnAction(e -> createSegmentationWindow());
-		menu.getItems().add(helpItem);
-		menu.getItems().add(segmentItem);
-	}
+    @Override
+    public String getDescription() {
+        return EXTENSION_DESCRIPTION;
+    }
 
-	// Create main extension window.
-	private void createSegmentationWindow() {
-		if (segmentStage == null) {
-			try {
-				segmentStage = new Stage();
-				Image mainIcon = new Image(Objects.requireNonNull(YoloExtension.class.getResourceAsStream("images/icon.png")));
-				segmentStage.getIcons().add(mainIcon);
-				Scene segmentScene = new Scene(ExtensionInterface.createInstance());
-				segmentStage.setScene(segmentScene);
-				segmentStage.setResizable(false);
-				segmentStage.setTitle("YOLO Tumor Segmentation");
-			} catch (IOException e) {
-				Dialogs.showErrorMessage("Extension Error", "GUI loading failed");
-				logger.error("Unable to load extension interface FXML", e);
-			}
-		}
-		segmentStage.show();
-	}
+    @Override
+    public Version getQuPathVersion() {
+        return EXTENSION_QUPATH_VERSION;
+    }
 
-	@Override
-	public String getName() {
-		return EXTENSION_NAME;
-	}
-
-	@Override
-	public String getDescription() {
-		return EXTENSION_DESCRIPTION;
-	}
-
-	@Override
-	public Version getQuPathVersion() {
-		return EXTENSION_QUPATH_VERSION;
-	}
-
-	@Override
-	public GitHubRepo getRepository() {
-		return EXTENSION_REPOSITORY;
-	}
+    @Override
+    public GitHubRepo getRepository() {
+        return EXTENSION_REPOSITORY;
+    }
 
 }

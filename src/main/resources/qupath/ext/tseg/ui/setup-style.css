@@ -1,0 +1,8 @@
+.log-area {
+    -fx-font-family: "Monospaced", "Consolas", "Courier New", monospace;
+    -fx-font-size: 11px;
+}
+
+.log-area .text {
+    -fx-fill: #222222;
+}

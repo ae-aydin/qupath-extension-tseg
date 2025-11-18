@@ -1,32 +1,61 @@
-# QuPath YOLO Tumor Segmentation Extension
+# QuPath Tumor Segmentation Extension
 
-**HU AIN Final Project**
+**QuPath Version: 0.6.0**
 
-Project Repositories:
-* Model Training: [tseg](https://github.com/ae-aydin/tseg)
-* Extension Helper Script: [tseg-qupath-inf](https://github.com/ae-aydin/tseg-qupath-inf)
-* Extension: [qupath-extension-tseg](https://github.com/ae-aydin/qupath-extension-tseg)
+An extension for QuPath that enables deep learning based tumor segmentation by integrating a Python inference environment. It sends a selected region as tiles for inference and integrates the resulting predictions back into QuPath as GeoJSON annotations.
 
 ***
 
-Enables tumor segmentation with YOLO-seg models through a Python inference script, managing input/output by sending ROI and receiving predictions in GeoJSON format for integration with QuPath.
+### Requirements
 
-<p align="center">
-  <img src="interface.jpg" width=450>
-</p>
+*   An active **internet connection** for the one-time setup.
+*   **`curl`** command-line tool.
 
-### Installation
-1. Install the extension.
-   * For installation, check https://qupath.readthedocs.io/en/latest/docs/intro/extensions.html.
-2. Download the inference script from [*tseg-qupath-inf*](https://github.com/ae-aydin/tseg-qupath-inf) (either by cloning the repository or downloading the ZIP archive).
-    * `Python > 3.8`
-    * https://www.python.org/downloads/
-3. Run *setup.bat* (for Windows) or *setup.sh* (for Linux and macOS) to prepare the inference folder.
-    * This will create virtual environment and some folders.
-4. Obtain a YOLO-seg model `(.pt, single class - 0: Tumor)` for segmentation.
-5. Place the model inside the `tseg-qupath-inf/models` directory and rename it to `model.pt` if required.
-6. In QuPath, select a ROI using the rectangle tool and ensure it is selected.
+***
 
-7. Open the `Extensions > TSEG > Segment` window within QuPath and select the `tseg-qupath-inf` directory using the directory chooser.
-    * For tips check `Extensions > TSEG > Help`
-8. Change inference arguments if needed and click the **Segment Selected Region** button to initiate the segmentation process.
+### One-Time Setup
+
+On the first run, the extension automatically sets up its environment. This process runs only once and will:
+
+1.  Create an inference directory in your QuPath user extension folder.
+2.  Download the Python inference repository [tseg-qupath-inf](https://github.com/ae-aydin/tseg-qupath-inf).
+3.  Set up the Python environment using `uv` (a fast Python installer).
+4.  Download the default segmentation models.
+
+***
+
+### Usage
+
+1.  Open an image within a QuPath project and draw an annotation. The image must have a defined Microns per Pixel (MPP) value.
+2.  Select the annotation.
+3.  Open the extension from the `Extensions` menu.
+4.  Adjust the inference settings if needed, then click **Segment Selected Region**.
+
+***
+
+### Project Repositories
+
+*   Model Training: [tseg](https://github.com/ae-aydin/tseg)
+*   Inference Script: [tseg-qupath-inf](https://github.com/ae-aydin/tseg-qupath-inf)
+*   Extension: [qupath-extension-tseg](https://github.com/ae-aydin/qupath-extension-tseg)
+
+***
+
+### Future Improvements
+
+*   Easy installation feature
+*   Catalog for QuPath extension manager
+*   More model formats
+*   Better models
+
+***
+
+### License
+
+Licensed under the [GPL-3.0](LICENSE).
+
+***
+
+### Attribution
+
+*   <a href="https://www.flaticon.com/free-icons/tumor" title="tumor icons">Tumor icons created by Freepik - Flaticon</a>

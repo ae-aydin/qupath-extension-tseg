@@ -9,14 +9,13 @@ plugins {
 qupathExtension {
     name = "qupath-extension-tseg"
     group = "io.github.qupath"
-    version = "0.1.0-SNAPSHOT"
-    description = "Tumor Segmentation with YOLO Models"
+    version = "0.1.0"
+    description = "Automatic Tumor Area Segmentation"
     automaticModule = "io.github.qupath.extension.tseg"
 }
 
 // TODO: Define your dependencies here
 dependencies {
-
     // Main dependencies for most QuPath extensions
     shadow(libs.bundles.qupath)
     shadow(libs.bundles.logging)
