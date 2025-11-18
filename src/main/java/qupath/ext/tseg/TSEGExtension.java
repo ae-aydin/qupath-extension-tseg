@@ -21,14 +21,14 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class YoloExtension implements QuPathExtension, GitHubProject {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(YoloExtension.class);
 
 	private static final String EXTENSION_NAME = "YOLO Tumor Segmentation";
 
 	private static final String EXTENSION_DESCRIPTION = "Tumor Segmentation with YOLO-seg Models - HU AIN Final Project";
 
-	private static final Version EXTENSION_QUPATH_VERSION = Version.parse("v0.5.0");
+	private static final Version EXTENSION_QUPATH_VERSION = Version.parse("v0.6.0");
 
 	private static final GitHubRepo EXTENSION_REPOSITORY = GitHubRepo.create(
 			EXTENSION_NAME, "ae-aydin", "qupath-extension-tseg");
@@ -124,7 +124,7 @@ public class YoloExtension implements QuPathExtension, GitHubProject {
 	public String getDescription() {
 		return EXTENSION_DESCRIPTION;
 	}
-	
+
 	@Override
 	public Version getQuPathVersion() {
 		return EXTENSION_QUPATH_VERSION;
