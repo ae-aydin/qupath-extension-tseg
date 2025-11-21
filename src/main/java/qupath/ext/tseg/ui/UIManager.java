@@ -53,6 +53,14 @@ public class UIManager {
     }
 
     /**
+     * Sets tile size spinner using preferred (model) tile size value.
+     */
+    public static void setDefaultTileSize(Spinner<Integer> spinner) {
+        if (spinner.getValueFactory() != null)
+            spinner.getValueFactory().setValue(PreferenceManager.TILE_SIZE.getValue());
+    }
+
+    /**
      * Sets confidence spinner using preferred confidence value.
      */
     public static void setDefaultConfidence(Spinner<Double> spinner) {

@@ -54,9 +54,11 @@ public class ExtensionInterface extends VBox {
     );
 
     @FXML
-    private Spinner<Double> confidenceSpinner;
-    @FXML
     private Spinner<Double> targetMPPSpinner;
+    @FXML
+    private Spinner<Integer> tileSizeSpinner;
+    @FXML
+    private Spinner<Double> confidenceSpinner;
     @FXML
     private ComboBox<String> modelComboBox;
     @FXML
@@ -95,6 +97,7 @@ public class ExtensionInterface extends VBox {
     @FXML
     private void initialize() {
         UIManager.setDefaultTargetMPP(targetMPPSpinner);
+        UIManager.setDefaultTileSize(tileSizeSpinner);
         UIManager.setDefaultConfidence(confidenceSpinner);
 
         if (!SetupManager.hasCompletedSetup()) {
@@ -223,4 +226,16 @@ public class ExtensionInterface extends VBox {
         }
     }
 
+    @FXML
+    private void openGitHubRepo() {
+        String url = STRING_BUNDLE.getString("about.extra.link");
+        try {
+            java.awt.Desktop.getDesktop().browse(new java.net.URI(url));
+        } catch (Exception e) {
+            try {
+                Runtime.getRuntime().exec(new String[]{"xdg-open", url});
+            } catch (Exception ignored) {
+            }
+        }
+    }
 }

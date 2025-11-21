@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 <fx:root xmlns:fx="http://javafx.com/fxml/1"
          type="VBox"
          prefWidth="500"
@@ -34,48 +35,60 @@
 
     <StackPane fx:id="contentStack" VBox.vgrow="ALWAYS">
 
-        <VBox fx:id="mainView" spacing="20" visible="${mainTab.selected}" managed="${mainTab.selected}">
+        <VBox fx:id="mainView" spacing="15" visible="${mainTab.selected}" managed="${mainTab.selected}">
+
             <padding>
                 <Insets top="25" right="25" bottom="25" left="25"/>
             </padding>
 
             <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="%label.model" minWidth="80"/>
+                <Label text="%label.model" minWidth="60"/>
                 <ComboBox fx:id="modelComboBox" promptText="%prompt.select.model" maxWidth="Infinity"
                           HBox.hgrow="ALWAYS" onAction="#onModelSelected"/>
                 <Button fx:id="modelChooser" text="🗁" onAction="#addModel"/>
             </HBox>
 
-            <HBox spacing="20" alignment="CENTER_LEFT">
-                <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
-                    <Label text="%label.confidence" minWidth="80">
-                        <tooltip>
-                            <Tooltip text="%tooltip.confidence"/>
-                        </tooltip>
-                    </Label>
-                    <Spinner fx:id="confidenceSpinner" editable="true" maxWidth="Infinity" HBox.hgrow="ALWAYS">
-                        <valueFactory>
-                            <SpinnerValueFactory.DoubleSpinnerValueFactory min="0.0" max="1.0" initialValue="0.5"
-                                                                           amountToStepBy="0.05"/>
-                        </valueFactory>
-                    </Spinner>
-                </HBox>
-                <HBox spacing="10" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
-                    <Label text="%label.targetMPP" minWidth="80">
+            <HBox spacing="15" alignment="CENTER" VBox.vgrow="NEVER">
+
+                <VBox spacing="5" HBox.hgrow="ALWAYS" alignment="CENTER">
+                    <Label text="%label.targetMPP" textAlignment="CENTER"/>
+                    <Spinner fx:id="targetMPPSpinner" editable="true" maxWidth="Infinity">
                         <tooltip>
                             <Tooltip text="%tooltip.targetMPP"/>
                         </tooltip>
-                    </Label>
-                    <Spinner fx:id="targetMPPSpinner" editable="true" maxWidth="Infinity" HBox.hgrow="ALWAYS">
                         <valueFactory>
-                            <SpinnerValueFactory.DoubleSpinnerValueFactory min="0" max="5" initialValue="0.5"
-                                                                           amountToStepBy="0.1"/>
+                            <SpinnerValueFactory.DoubleSpinnerValueFactory min="0" max="5" amountToStepBy="0.1"/>
                         </valueFactory>
                     </Spinner>
-                </HBox>
+                </VBox>
+
+                <VBox spacing="5" HBox.hgrow="ALWAYS" alignment="CENTER">
+                    <Label text="%label.tileSize" textAlignment="CENTER"/>
+                    <Spinner fx:id="tileSizeSpinner" editable="true" maxWidth="Infinity">
+                        <tooltip>
+                            <Tooltip text="%tooltip.tileSize"/>
+                        </tooltip>
+                        <valueFactory>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory min="128" max="2048" amountToStepBy="128"/>
+                        </valueFactory>
+                    </Spinner>
+                </VBox>
+
+                <VBox spacing="5" HBox.hgrow="ALWAYS" alignment="CENTER">
+                    <Label text="%label.confidence" textAlignment="CENTER"/>
+                    <Spinner fx:id="confidenceSpinner" editable="true" maxWidth="Infinity">
+                        <tooltip>
+                            <Tooltip text="%tooltip.confidence"/>
+                        </tooltip>
+                        <valueFactory>
+                            <SpinnerValueFactory.DoubleSpinnerValueFactory min="0.0" max="1.0" amountToStepBy="0.05"/>
+                        </valueFactory>
+                    </Spinner>
+                </VBox>
+
             </HBox>
 
-            <VBox spacing="20" alignment="CENTER">
+            <VBox spacing="10" alignment="CENTER">
                 <StackPane>
                     <Button fx:id="runButton" text="%button.segment" onAction="#runInference" alignment="CENTER"
                             prefHeight="50" prefWidth="Infinity"/>
@@ -87,14 +100,28 @@
 
         <VBox fx:id="aboutView" alignment="CENTER" spacing="10" visible="${aboutTab.selected}"
               managed="${aboutTab.selected}">
+
             <padding>
                 <Insets top="5" right="15" bottom="15" left="15"/>
             </padding>
+
             <Label text="%window.title" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
-            <Separator prefWidth="200" maxWidth="Infinity"/>
-            <Text text="%about.content" textAlignment="CENTER" wrappingWidth="470" style="-fx-fill: #bbbbbb;"/>
-            <Text text="%about.extra" textAlignment="CENTER" style="-fx-fill: #bbbbbb;"/>
-            <Label text="%about.author"/>
+
+            <Separator maxWidth="200"/>
+
+            <TextFlow textAlignment="CENTER" maxWidth="450">
+                <Text text="%about.content" style="-fx-fill: #bbbbbb; -fx-font-size: 12px;"/>
+            </TextFlow>
+
+            <VBox spacing="5" alignment="CENTER">
+                <Hyperlink text="%about.extra"
+                           onAction="#openGitHubRepo"
+                           style="-fx-border-color: transparent; -fx-font-size: 12px;"/>
+
+                <Label text="%about.author"
+                       style="-fx-text-fill: #888888; -fx-font-size: 10px;"/>
+            </VBox>
+
         </VBox>
 
     </StackPane>
