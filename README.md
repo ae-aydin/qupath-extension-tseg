@@ -30,6 +30,14 @@ On the first run, the extension automatically sets up its environment. This proc
 3.  Open the extension from the `Extensions` menu.
 4.  Adjust the inference settings if needed, then click **Segment Selected Region**.
 
+### Model Compatibility
+
+The extension supports any ONNX-exported binary segmentation model that adheres to the following specification:
+
+* Input: Standard RGB tensor $(N, 3, H, W)$ expecting ImageNet mean/std normalization.
+* Output: Single-channel logits (no activation function applied).
+* Architecture: Any architecture (SegFormer, U-Net, etc.) supported by ONNX Runtime.
+
 ### Project Repositories
 
 *   Model Training: [tseg](https://github.com/ae-aydin/tseg)
