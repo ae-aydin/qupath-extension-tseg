@@ -9,7 +9,7 @@ plugins {
 qupathExtension {
     name = "qupath-extension-tseg"
     group = "io.github.qupath"
-    version = "0.2.0"
+    version = "0.3.0"
     description = "Automatic Tumor Area Segmentation"
     automaticModule = "io.github.qupath.extension.tseg"
 }
